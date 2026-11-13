@@ -1,6 +1,6 @@
 """《向阳里驿站》 기획서 생성기: 같은 데이터로 xlsx(편집·집계용)와 md(열람용)를 만든다.
 
-사용법: python3 tools/make_plan_xiangyangli.py 向阳里驿站
+사용법: python3 tools/make_plan_xiangyangli.py 向阳里驿站 [초고 완료한 마지막 화 번호]
 """
 import os
 import sys
@@ -10,6 +10,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
 OUTDIR = sys.argv[1] if len(sys.argv) > 1 else "向阳里驿站"
+DONE = int(sys.argv[2]) if len(sys.argv) > 2 else 0  # 초고 완료한 마지막 화
 os.makedirs(OUTDIR, exist_ok=True)
 XLSX = os.path.join(OUTDIR, "向阳里驿站_기획서.xlsx")
 MD = os.path.join(OUTDIR, "기획서.md")
@@ -505,7 +506,7 @@ for i, t in enumerate(SCENE_RULE, 9):
 ws = wb.create_sheet("화별 개요")
 rows = []
 for n, (title, p, when, who, event, point, issue) in enumerate(EP, 1):
-    rows.append([n, title, PARTS[p], LEVEL[p], when, who, event, point, TURNS, "기획", issue])
+    rows.append([n, title, PARTS[p], LEVEL[p], when, who, event, point, TURNS, "초고완료" if n <= DONE else "기획", issue])
 table(ws, ["화", "제목", "부", "난이도", "때", "중심 인물", "사건 (문제 → 해결)", "학습 포인트", "턴 수", "작성 상태", "연결 현안·문화"],
       rows, [5, 26, 17, 12, 16, 20, 80, 40, 7, 10, 42])
 dv = DataValidation(type="list", formula1='"기획,초고완료,검수완료"', allow_blank=True)
